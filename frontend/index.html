@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FitQuest - Gamified Workout Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>FitQuest</h1>
+    <form id="workout-form">
+      <input type="text" id="workout-type" placeholder="Workout Type (e.g., Push-ups)" required>
+      <input type="number" id="workout-amount" placeholder="Amount (e.g., 20)" required>
+      <button type="submit">Log Workout</button>
+    </form>
+    <div id="exp-display">EXP: 0</div>
+    <div id="rank-display">Rank: E</div>
+    <div id="leaderboard">
+      <h2>Leaderboard</h2>
+      <ul id="leaderboard-list"></ul>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
