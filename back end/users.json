@@ -1,0 +1,43 @@
+{
+  "AzwadUddin": {
+    "password": "egagd",
+    "exp": 1608,
+    "workouts": [
+      {
+        "workoutType": "Push up",
+        "amount": 10,
+        "expGained": 10
+      },
+      {
+        "workoutType": "Push up",
+        "amount": 100,
+        "expGained": 100
+      },
+      {
+        "workoutType": "Push up",
+        "amount": 1000,
+        "expGained": 1000
+      },
+      {
+        "workoutType": "Push up",
+        "amount": 12,
+        "expGained": 12
+      },
+      {
+        "workoutType": "push up",
+        "amount": 10,
+        "expGained": 10
+      },
+      {
+        "workoutType": "Push up",
+        "amount": 10,
+        "expGained": 10
+      }
+    ]
+  },
+  "amar": {
+    "password": "123",
+    "exp": 0,
+    "workouts": []
+  }
+}

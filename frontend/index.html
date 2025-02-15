@@ -3,19 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FitQuest - Gamified Workout Tracker</title>
+  <title>FitQuest - Workout Tracker</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <h1>FitQuest</h1>
-    <form id="workout-form">
-      <input type="text" id="workout-type" placeholder="Workout Type (e.g., Push-ups)" required>
-      <input type="number" id="workout-amount" placeholder="Amount (e.g., 20)" required>
-      <button type="submit">Log Workout</button>
-    </form>
-    <div id="exp-display">EXP: 0</div>
-    <div id="rank-display">Rank: E</div>
+
+    <!-- Login/Register Section -->
+    <div id="auth-section">
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <button id="register-btn">Register</button>
+      <button id="login-btn">Login</button>
+      <p id="auth-message"></p>
+    </div>
+
+    <!-- Workout Form (Hidden Until Logged In) -->
+    <div id="workout-section" style="display:none;">
+      <h2>Welcome, <span id="user-display"></span></h2>
+      <h3>Workout History</h3>
+<ul id="workout-history"></ul>
+
+      <form id="workout-form">
+        <input type="text" id="workout-type" placeholder="Workout Type">
+        <input type="number" id="workout-amount" placeholder="Amount">
+        <button type="submit">Log Workout</button>
+      </form>
+      <div id="exp-display">EXP: 0</div>
+      <div id="rank-display">Rank: E</div>
+    </div>
+
     <div id="leaderboard">
       <h2>Leaderboard</h2>
       <ul id="leaderboard-list"></ul>
