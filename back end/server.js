@@ -49,39 +49,49 @@ app.post('/register', (req, res) => {
 });
 
 // ✅ Login an existing user
-app.post('/workout', (req, res) => {
-    const { username, workoutType, amount } = req.body;
-  
-    console.log(`Workout request received from ${username}: ${workoutType} - ${amount} reps`);
-  
-    if (!users[username]) {
-      console.log("Error: User not found in database.");
-      return res.status(400).json({ error: "User not logged in!" });
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    if (!users[username] || users[username].password !== password) {
+      return res.status(401).json({ error: "Invalid username or password" });
     }
-  
-    // Ensure the user has a workouts log
-    if (!users[username].workouts) {
-      users[username].workouts = [];
-    }
-  
-    // Store the workout in the user’s data
-    users[username].workouts.push({ type: workoutType, amount });
-  
-    // Update EXP & Rank
-    users[username].exp += amount;  // Increase EXP
-    users[username].rank = calculateRank(users[username].exp); // Calculate Rank based on EXP
-  
-    console.log(`Updated ${username}: EXP = ${users[username].exp}, Rank = ${users[username].rank}`);
-    console.log(`Workouts logged:`, users[username].workouts);
-  
-    // Return updated user data, including the new EXP, Rank, and Workouts
-    res.json({ 
-      totalExp: users[username].exp, 
-      rank: users[username].rank,
-      workouts: users[username].workouts
-    });
+    
+    res.json({ message: "Login successful", exp: users[username].exp, rank: getRank(users[username].exp) });
   });
-  
+
+// ✅ Login an existing user
+app.post('/workout', (req, res) => {
+  const { username, workoutType, amount } = req.body;
+
+  console.log(`Workout request received from ${username}: ${workoutType} - ${amount} reps`);
+
+  if (!users[username]) {
+    console.log("Error: User not found in database.");
+    return res.status(400).json({ error: "User not logged in!" });
+  }
+
+  // Ensure the user has a workouts log
+  if (!users[username].workouts) {
+    users[username].workouts = [];
+  }
+
+  // Store the workout in the user’s data
+  users[username].workouts.push({ type: workoutType, amount });
+
+  // Update EXP & Rank
+  users[username].exp += amount;  // Increase EXP
+  users[username].rank = calculateRank(users[username].exp); // Calculate Rank based on EXP
+
+  console.log(`Updated ${username}: EXP = ${users[username].exp}, Rank = ${users[username].rank}`);
+  console.log(`Workouts logged:`, users[username].workouts);
+
+  // Return updated user data, including the new EXP, Rank, and Workouts
+  res.json({ 
+    totalExp: users[username].exp, 
+    rank: users[username].rank,
+    workouts: users[username].workouts
+  });
+});
+
   
 
 // ✅ Retrieve leaderboard
