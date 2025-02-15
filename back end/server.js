@@ -79,18 +79,22 @@ app.post('/workout', (req, res) => {
 
   // Update EXP & Rank
   users[username].exp += amount;  // Increase EXP
-  users[username].rank = calculateRank(users[username].exp); // Calculate Rank based on EXP
+  users[username].rank = getRank(users[username].exp); // Calculate Rank based on EXP
+
+  // ✅ **FIX: Save the updated user data to users.json**
+  saveUsers(users);
 
   console.log(`Updated ${username}: EXP = ${users[username].exp}, Rank = ${users[username].rank}`);
   console.log(`Workouts logged:`, users[username].workouts);
 
   // Return updated user data, including the new EXP, Rank, and Workouts
   res.json({ 
-    totalExp: users[username].exp, 
+    totalExp: users[username].exp,
     rank: users[username].rank,
     workouts: users[username].workouts
   });
 });
+
 
   
 

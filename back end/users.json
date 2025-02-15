@@ -39,5 +39,16 @@
     "password": "123",
     "exp": 0,
     "workouts": []
+  },
+  "ammar": {
+    "password": "123",
+    "exp": 20,
+    "workouts": [
+      {
+        "type": "push ups",
+        "amount": 20
+      }
+    ],
+    "rank": "E"
   }
 }
