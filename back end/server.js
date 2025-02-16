@@ -97,18 +97,20 @@ app.post('/workout', (req, res) => {
 
 
   
-
-// ✅ Retrieve leaderboard
+// ✅ Fix: Correct Leaderboard Route
 app.get('/leaderboard', (req, res) => {
   const leaderboard = Object.keys(users).map(username => ({
     username,
-    exp: users[username].exp,
+    exp: users[username].exp || 0,
     rank: getRank(users[username].exp)
   }));
-  
+
+  // Sort users by EXP in descending order
   leaderboard.sort((a, b) => b.exp - a.exp);
-  res.json({ leaderboard });
+
+  res.json({ leaderboard }); // ✅ Send leaderboard in correct format
 });
+
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -94,57 +94,62 @@ async function loginUser(username, password) {
 }
 
 /// Log workout (only works when logged in)
-document.getElementById('workout-form').addEventListener('submit', async (e) => {
-  e.preventDefault(); // Stops page from refreshing
+document.getElementById("workout-form").addEventListener("submit", async (e) => {
+    e.preventDefault(); // Stops page from refreshing
 
-  if (!currentUser) {
-    console.error("User not logged in!");
-    return;
-  }
-
-  const type = document.getElementById('workout-type').value;
-  const amount = parseInt(document.getElementById('workout-amount').value);
-
-  console.log(`Submitting workout: ${type} - ${amount} reps for ${currentUser}`);
-
-  try {
-    const res = await fetch('http://localhost:3000/workout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: currentUser, workoutType: type, amount })
-    });
-
-    const data = await res.json();
-    console.log("Workout response:", data);
-
-    if (data.error) {
-      document.getElementById('workout-message').innerText = data.error;
-      return;
+    if (!currentUser) {
+        console.error("User not logged in!");
+        return;
     }
 
-    // Update EXP & Rank on the page immediately
-    document.getElementById('exp-display').innerText = `EXP: ${data.totalExp}`;
-    document.getElementById('rank-display').innerText = `Rank: ${data.rank}`;
+    const type = document.getElementById('workout-type').value;
+    const amount = parseInt(document.getElementById('workout-amount').value);
 
-    // Update Workout History
-    const workoutList = document.getElementById('workout-history');
-    workoutList.innerHTML = ''; // Clear previous entries
+    console.log(`Submitting workout: ${type} - ${amount} reps for ${currentUser}`);
 
-    data.workouts.forEach(workout => {
-      const li = document.createElement('li');
-      li.innerText = `${workout.type}: ${workout.amount} reps`;
-      workoutList.appendChild(li);
-    });
+    try {
+        const res = await fetch('http://localhost:3000/workout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: currentUser, workoutType: type, amount })
+        });
 
-    // Success message
-    document.getElementById('workout-message').innerText = "Workout logged successfully!";
-    document.getElementById('workout-amount').value = ""; // Clear input field
+        const data = await res.json();
+        console.log("Workout response:", data);
 
-  } catch (error) {
-    console.error("Error logging workout:", error);
-    document.getElementById('workout-message').innerText = "Failed to log workout.";
-  }
-});
+        if (data.error) {
+            document.getElementById('workout-message').innerText = data.error;
+            return;
+        }
+
+        // ✅ Update EXP & Rank on the page immediately
+        document.getElementById('exp-display').innerText = `EXP: ${data.totalExp}`;
+        document.getElementById('rank-display').innerText = `Rank: ${data.rank}`;
+
+        // ✅ Update Workout History
+        const workoutList = document.getElementById('workout-history');
+        workoutList.innerHTML = ''; // Clear previous entries
+
+        data.workouts.forEach(workout => {
+            const li = document.createElement('li');
+            li.innerText = `${workout.type}: ${workout.amount} reps`;
+            workoutList.appendChild(li);
+        });
+
+        // ✅ Refresh Leaderboard immediately after logging workout
+        updateLeaderboard();
+
+        // ✅ Success message
+        document.getElementById('workout-message').innerText = "Workout logged successfully!";
+        document.getElementById('workout-amount').value = ""; // Clear input field
+
+    } catch (error) {
+        console.error("Error logging workout:", error);
+        document.getElementById('workout-message').innerText = "Failed to log workout.";
+    }
+
+  });
+
 
 
 
@@ -171,3 +176,34 @@ function checkLogin() {
 
 // Check login on page load
 checkLogin();
+
+// ✅ Fetch and display the leaderboard
+function updateLeaderboard() {
+  fetch('http://localhost:3000/leaderboard')
+      .then(response => response.json())
+      .then(data => {
+          console.log("Leaderboard data received:", data); // Debugging
+
+          const leaderboardSection = document.getElementById("leaderboard-list");
+          leaderboardSection.innerHTML = ""; // Clear existing leaderboard
+
+          if (data.leaderboard.length === 0) {
+              leaderboardSection.innerHTML = "<p>No users found.</p>";
+              return;
+          }
+
+          // Create leaderboard list
+          data.leaderboard.forEach((user, index) => {
+              const li = document.createElement("li");
+              li.innerHTML = `<strong>#${index + 1} ${user.username}</strong> - EXP: ${user.exp} (Rank: ${user.rank})`;
+              leaderboardSection.appendChild(li);
+          });
+      })
+      .catch(error => {
+          console.error("Error fetching leaderboard:", error);
+          document.getElementById("leaderboard-list").innerHTML += "<p style='color:red;'>Failed to load leaderboard.</p>";
+      });
+}
+
+// ✅ Load leaderboard when page loads
+document.addEventListener("DOMContentLoaded", updateLeaderboard);

@@ -42,10 +42,29 @@
   },
   "ammar": {
     "password": "123",
-    "exp": 20,
+    "exp": 60,
     "workouts": [
       {
         "type": "push ups",
+        "amount": 20
+      },
+      {
+        "type": "pushups",
+        "amount": 20
+      },
+      {
+        "type": "pushups",
+        "amount": 20
+      }
+    ],
+    "rank": "E"
+  },
+  "raheem": {
+    "password": "123",
+    "exp": 20,
+    "workouts": [
+      {
+        "type": "pushups",
         "amount": 20
       }
     ],
