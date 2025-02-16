@@ -102,6 +102,7 @@ async function loginUser(username, password) {
 }
 
 /// Log workout (only works when logged in)
+// Function to log a workout and check for rank-up
 document.getElementById("workout-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -127,16 +128,23 @@ document.getElementById("workout-form").addEventListener("submit", async (e) => 
           return;
       }
 
+      // ✅ Update UI with new EXP and Rank
       document.getElementById('exp-display').innerText = `EXP: ${data.totalExp}`;
       document.getElementById('rank-display').innerText = `Rank: ${data.rank}`;
       updateXPProgress(data.totalExp, data.nextRankExp);
+      updateAvatar(data.rank);
 
       updateLeaderboard();
+
+      // ✅ Check for a challenge after rank-up
+      checkForChallenge(currentUser);
+
   } catch (error) {
       console.error("Error logging workout:", error);
       document.getElementById('workout-message').innerText = "Failed to log workout.";
   }
 });
+
 
 
 
@@ -202,17 +210,23 @@ document.addEventListener("DOMContentLoaded", updateLeaderboard);
 
 // ✅ Fetch and show the challenge
 // ✅ Fetch and show the challenge when a user ranks up
-function checkForChallenge(username) {
-  fetch(`http://localhost:3000/challenge/${username}`)
-      .then(response => response.json())
-      .then(data => {
-          if (data.challenge) {
-              showNotification(data.challenge);
-          }
-      })
-      .catch(error => console.error("Error fetching challenge:", error));
+// ✅ Fetch challenge for the logged-in user
+async function checkForChallenge(username) {
+  try {
+      const res = await fetch(`http://localhost:3000/challenge/${username}`);
+      if (!res.ok) throw new Error("Challenge not found");
+
+      const data = await res.json();
+      if (data.challenge) {
+          showNotification(data.challenge);
+      }
+  } catch (error) {
+      console.error("Error fetching challenge:", error);
+  }
 }
 
+
+// ✅ Show Challenge Notification with Progress Bar
 // ✅ Show Challenge Notification with Progress Bar
 function showNotification(challenge) {
   const notification = document.createElement("div");
@@ -230,8 +244,6 @@ function showNotification(challenge) {
 
   // ✅ Animate progress bar over 10 seconds
   let progressBar = notification.querySelector(".progress");
-  let duration = 10000; // 10 seconds
-  progressBar.style.transition = `width ${duration / 1000}s linear`;
   setTimeout(() => {
       progressBar.style.width = "100%";
   }, 100);
@@ -239,8 +251,9 @@ function showNotification(challenge) {
   // ✅ Auto-remove notification after 10 seconds
   setTimeout(() => {
       notification.remove();
-  }, duration);
+  }, 10000);
 }
+
 
 // ✅ Complete Challenge and Claim XP
 // ✅ Complete Challenge and Claim XP
@@ -271,24 +284,50 @@ function completeChallenge(reward) {
 
 
 // ✅ Call challenge check after logging a workout
-document.getElementById("workout-form").addEventListener("submit", function(event) {
-  event.preventDefault();
-  const username = document.getElementById("username").value;
-  const workoutType = document.getElementById("workoutType").value;
-  const amount = parseInt(document.getElementById("amount").value);
+document.getElementById("workout-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-  fetch("http://localhost:3000/workout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, workoutType, amount })
-  })
-  .then(response => response.json())
-  .then(data => {
+  if (!currentUser) {
+      console.error("User not logged in!");
+      return;
+  }
+
+  const type = document.getElementById('workout-type').value;
+  const amount = parseInt(document.getElementById('workout-amount').value);
+
+  try {
+      const res = await fetch("http://localhost:3000/workout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: currentUser, workoutType: type, amount })
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+          document.getElementById('workout-message').innerText = data.error;
+          return;
+      }
+
+      // ✅ Update UI with new EXP and Rank
+      document.getElementById('exp-display').innerText = `EXP: ${data.totalExp}`;
+      document.getElementById('rank-display').innerText = `Rank: ${data.rank}`;
+      updateXPProgress(data.totalExp, data.nextRankExp);
+      updateAvatar(data.rank);
+
       updateLeaderboard();
-      checkForChallenge(username); // ✅ Fetch challenge when workout is logged
-  })
-  .catch(error => console.error("Error logging workout:", error));
+
+      // ✅ Show Challenge if one is received
+      if (data.challenge) {
+          showNotification(data.challenge);
+      }
+
+  } catch (error) {
+      console.error("Error logging workout:", error);
+      document.getElementById('workout-message').innerText = "Failed to log workout.";
+  }
 });
+
 
 function updateXPProgress(exp, nextRankExp) {
   const progressBar = document.getElementById("xp-progress-bar");
@@ -336,11 +375,14 @@ function showWorkoutSection(username, exp, rank, nextRankExp) {
   document.getElementById('rank-display').innerText = `Rank: ${rank}`;
 
   updateXPProgress(exp, nextRankExp);
-  updateAvatar(rank); // ✅ Update avatar when user logs in
+  updateAvatar(rank);
 
   document.getElementById('auth-section').style.display = 'none';
   document.getElementById('workout-section').style.display = 'block';
+
+  checkForChallenge(username); // ✅ Fetch challenge after login
 }
+
 
 // Update avatar when logging a workout
 document.getElementById("workout-form").addEventListener("submit", async (e) => {
@@ -368,14 +410,20 @@ document.getElementById("workout-form").addEventListener("submit", async (e) => 
           return;
       }
 
+      // ✅ Update UI with new EXP and Rank
       document.getElementById('exp-display').innerText = `EXP: ${data.totalExp}`;
       document.getElementById('rank-display').innerText = `Rank: ${data.rank}`;
       updateXPProgress(data.totalExp, data.nextRankExp);
-      updateAvatar(data.rank); // ✅ Update avatar when ranking up
+      updateAvatar(data.rank);
 
       updateLeaderboard();
+
+      // ✅ Fetch and show new challenge if the rank increased
+      checkForChallenge(currentUser);
+
   } catch (error) {
       console.error("Error logging workout:", error);
       document.getElementById('workout-message').innerText = "Failed to log workout.";
   }
 });
+

@@ -178,3 +178,60 @@ button:active {
   height: auto;
   object-fit: contain;
 }
+
+
+/* ✅ Challenge Notification Styling */
+.notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255, 49, 49, 0.9);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(255, 49, 49, 0.5);
+  width: 300px;
+  font-family: 'Rajdhani', sans-serif;
+  color: white;
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* ✅ Progress Bar for Challenge Timer */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #333;
+  margin-top: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ff3131, #ff6f6f);
+  transition: width 10s linear;
+}
+
+/* ✅ Button inside notification */
+.notification button {
+  margin-top: 10px;
+  padding: 7px;
+  background: #ff6f6f;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  transition: background 0.3s ease-in-out;
+}
+
+.notification button:hover {
+  background: #ff3131;
+}
+
+/* ✅ Notification Fade-in Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

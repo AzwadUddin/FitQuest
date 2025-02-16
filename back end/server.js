@@ -79,19 +79,31 @@ app.post('/workout', (req, res) => {
       return res.status(400).json({ error: "User not found!" });
   }
 
+  let previousRank = getRank(users[username].exp); // Store previous rank
   users[username].exp += amount;
-  users[username].rank = getRank(users[username].exp);
+  users[username].rank = getRank(users[username].exp); // Update rank
 
   let nextRankExp = getNextRankExp(users[username].exp);
+  let newRank = users[username].rank;
+
+  let challenge = null;
+
+  // ✅ If rank increased, assign a new challenge
+  if (newRank !== previousRank && challenges[newRank]) {
+      challenge = challenges[newRank]; // Send the challenge with response
+      users[username].activeChallenge = challenge;
+  }
 
   saveUsers(users);
 
   res.json({ 
       totalExp: users[username].exp, 
-      rank: users[username].rank,
-      nextRankExp: nextRankExp
+      rank: newRank,
+      nextRankExp: nextRankExp,
+      challenge: challenge // ✅ Include challenge in response
   });
 });
+
 
 // ✅ Function to get the EXP needed for the next rank
 function getNextRankExp(exp) {
@@ -144,6 +156,21 @@ app.post('/complete-challenge', (req, res) => {
       rank: users[username].rank 
   });
 });
+
+// ✅ Endpoint to fetch active challenge for a user
+app.get('/challenge/:username', (req, res) => {
+  const username = req.params.username;
+
+  if (!users[username]) {
+      return res.status(400).json({ error: "User not found!" });
+  }
+
+  const userRank = users[username].rank;
+  const activeChallenge = challenges[userRank] || null; // Get challenge for the user's rank
+
+  res.json({ challenge: activeChallenge });
+});
+
 const PORT = 3000;
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

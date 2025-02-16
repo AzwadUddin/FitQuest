@@ -37,15 +37,15 @@
   },
   "amar": {
     "password": "123",
-    "exp": 16743,
+    "exp": 319803,
     "workouts": [],
-    "rank": "E",
+    "rank": "B",
     "completedChallenges": [
       "C"
     ],
     "activeChallenge": {
-      "task": "Run 1 mile",
-      "reward": 250
+      "task": "Do 50 sit-ups",
+      "reward": 500
     }
   },
   "ammar": {
@@ -357,14 +357,18 @@
   },
   "raheem": {
     "password": "123",
-    "exp": 20,
+    "exp": 6611370,
     "workouts": [
       {
         "type": "pushups",
         "amount": 20
       }
     ],
-    "rank": "E"
+    "rank": "A",
+    "activeChallenge": {
+      "task": "Complete 3 different exercises",
+      "reward": 1000
+    }
   },
   "ai": {
     "password": "123",
