@@ -1,16 +1,23 @@
 let currentUser = null;
 
+const rankThresholds = { 'E': 0, 'D': 50000, 'C': 150000, 'B': 300000, 'A': 5000000 };
+
+
 // Function to show the workout section after login
-function showWorkoutSection(username, exp, rank) {
+function showWorkoutSection(username, exp, rank, nextRankExp) {
   currentUser = username;
   document.getElementById('user-display').innerText = username;
   document.getElementById('exp-display').innerText = `EXP: ${exp}`;
   document.getElementById('rank-display').innerText = `Rank: ${rank}`;
   
-  // Hide login/register section and show workout section
+  updateXPProgress(exp, nextRankExp);
+
   document.getElementById('auth-section').style.display = 'none';
   document.getElementById('workout-section').style.display = 'block';
 }
+
+
+
 
 // Register user
 document.getElementById('register-btn').addEventListener('click', async () => {
@@ -67,7 +74,7 @@ async function loginUser(username, password) {
     console.log("Login response:", data);  // Debugging line
 
     if (data.message) {
-      showWorkoutSection(username, data.exp, data.rank);
+      showWorkoutSection(username, data.exp, data.rank, data.nextRankExp);
     } else {
       document.getElementById('auth-message').innerText = data.error;
     }
@@ -75,6 +82,7 @@ async function loginUser(username, password) {
     console.error("Error logging in:", error);
   }
 }
+
 
 
 // Function to log in user and update UI
@@ -105,8 +113,6 @@ document.getElementById("workout-form").addEventListener("submit", async (e) => 
   const type = document.getElementById('workout-type').value;
   const amount = parseInt(document.getElementById('workout-amount').value);
 
-  console.log(`Submitting workout: ${type} - ${amount} reps for ${currentUser}`);
-
   try {
       const res = await fetch("http://localhost:3000/workout", {
           method: "POST",
@@ -115,34 +121,25 @@ document.getElementById("workout-form").addEventListener("submit", async (e) => 
       });
 
       const data = await res.json();
-      console.log("Workout response:", data);
 
       if (data.error) {
           document.getElementById('workout-message').innerText = data.error;
           return;
       }
 
-      // ✅ Update EXP & Rank Immediately
       document.getElementById('exp-display').innerText = `EXP: ${data.totalExp}`;
       document.getElementById('rank-display').innerText = `Rank: ${data.rank}`;
+      updateXPProgress(data.totalExp, data.nextRankExp);
 
-      // ✅ Refresh Leaderboard
       updateLeaderboard();
-
-      // ✅ Check for Rank-Up Challenge Immediately
-      if (data.challenge) {
-          showNotification(data.challenge);
-      }
-
-      // ✅ Success Message
-      document.getElementById('workout-message').innerText = "Workout logged successfully!";
-      document.getElementById('workout-amount').value = ""; // Clear input field
-
   } catch (error) {
       console.error("Error logging workout:", error);
       document.getElementById('workout-message').innerText = "Failed to log workout.";
   }
 });
+
+
+
 
 
 
@@ -292,3 +289,28 @@ document.getElementById("workout-form").addEventListener("submit", function(even
   })
   .catch(error => console.error("Error logging workout:", error));
 });
+
+function updateXPProgress(exp, nextRankExp) {
+  const progressBar = document.getElementById("xp-progress-bar");
+  const progressLabel = document.getElementById("xp-progress-label");
+
+  // ✅ Find the previous rank's threshold
+  let previousThreshold = 0;
+  for (const rank in rankThresholds) {
+      if (exp < rankThresholds[rank]) {
+          break;
+      }
+      previousThreshold = rankThresholds[rank];
+  }
+
+  if (nextRankExp === null) {
+      progressBar.style.width = "100%";
+      progressLabel.innerText = "Max Rank Reached!";
+      return;
+  }
+
+  let progress = ((exp - previousThreshold) / (nextRankExp - previousThreshold)) * 100;
+  progressBar.style.width = `${progress}%`;
+  progressLabel.innerText = `Next Rank: ${exp}/${nextRankExp} XP`;
+}
+

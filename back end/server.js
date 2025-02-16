@@ -25,7 +25,14 @@ function saveUsers(users) {
 
 let users = loadUsers(); // Load users at startup
 
-const rankThresholds = { 'E': 0, 'D': 5000, 'C': 15000, 'B': 30000, 'A': 500000 };
+const rankThresholds = { 'E': 0, 'D': 50000, 'C': 150000, 'B': 300000, 'A': 5000000 };
+
+const challenges = {
+  'D': { task: "Do 30 pushups", reward: 100 },
+  'C': { task: "Run 1 mile", reward: 250 },
+  'B': { task: "Do 50 sit-ups", reward: 500 },
+  'A': { task: "Complete 3 different exercises", reward: 1000 }
+};
 
 function getRank(exp) {
   if (exp >= rankThresholds['A']) return 'A';
@@ -48,58 +55,55 @@ app.post('/register', (req, res) => {
   res.json({ message: "User registered successfully" });
 });
 
-// ✅ Login an existing user
 app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    if (!users[username] || users[username].password !== password) {
+  const { username, password } = req.body;
+  if (!users[username] || users[username].password !== password) {
       return res.status(401).json({ error: "Invalid username or password" });
-    }
-    
-    res.json({ message: "Login successful", exp: users[username].exp, rank: getRank(users[username].exp) });
+  }
+
+  let currentRank = getRank(users[username].exp);
+  let nextRankExp = getNextRankExp(users[username].exp);
+
+  res.json({ 
+      message: "Login successful", 
+      exp: users[username].exp, 
+      rank: currentRank,
+      nextRankExp: nextRankExp
   });
-
-  const challenges = {
-    'D': { task: "Do 30 pushups", reward: 100 },
-    'C': { task: "Run 1 mile", reward: 250 },
-    'B': { task: "Do 50 sit-ups", reward: 500 },
-    'A': { task: "Complete 3 different exercises", reward: 1000 }
-};
-
-app.post('/workout', (req, res) => {
-    const { username, workoutType, amount } = req.body;
-
-    if (!users[username]) {
-        return res.status(400).json({ error: "User not found!" });
-    }
-
-    const previousRank = users[username].rank;
-    users[username].exp += amount;
-    users[username].rank = getRank(users[username].exp);
-
-    // ✅ Assign challenge only if the user is reaching the rank for the first time
-    if (users[username].rank !== previousRank && challenges[users[username].rank]) {
-        if (!users[username].completedChallenges) {
-            users[username].completedChallenges = [];
-        }
-
-        // ✅ Only assign challenge if it's the user's first time reaching this rank
-        if (!users[username].completedChallenges.includes(users[username].rank)) {
-            users[username].activeChallenge = challenges[users[username].rank];
-            users[username].completedChallenges.push(users[username].rank);
-        }
-    }
-
-    saveUsers(users);
-
-    res.json({ 
-        totalExp: users[username].exp,
-        rank: users[username].rank,
-        workouts: users[username].workouts,
-        challenge: users[username].activeChallenge || null // ✅ Ensure challenge is returned
-    });
 });
 
+app.post('/workout', (req, res) => {
+  const { username, workoutType, amount } = req.body;
 
+  if (!users[username]) {
+      return res.status(400).json({ error: "User not found!" });
+  }
+
+  users[username].exp += amount;
+  users[username].rank = getRank(users[username].exp);
+
+  let nextRankExp = getNextRankExp(users[username].exp);
+
+  saveUsers(users);
+
+  res.json({ 
+      totalExp: users[username].exp, 
+      rank: users[username].rank,
+      nextRankExp: nextRankExp
+  });
+});
+
+// ✅ Function to get the EXP needed for the next rank
+function getNextRankExp(exp) {
+  let lastThreshold = 0;
+  for (const rank in rankThresholds) {
+      if (exp < rankThresholds[rank]) {
+          return rankThresholds[rank];
+      }
+      lastThreshold = rankThresholds[rank];
+  }
+  return lastThreshold; // If at max rank, return the last threshold
+}
 
 
   

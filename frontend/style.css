@@ -45,3 +45,32 @@ button {
   list-style-type: none;
   padding: 0;
 }
+
+#xp-progress-container {
+  width: 100%;
+  background: #ddd;
+  border-radius: 5px;
+  margin-top: 10px;
+  position: relative;
+  height: 20px;
+  overflow: hidden;
+}
+
+#xp-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #28a745;
+  transition: width 0.5s ease-in-out;
+}
+
+#xp-progress-label {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: black;
+  font-weight: bold;
+}
+
