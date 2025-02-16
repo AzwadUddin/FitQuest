@@ -365,5 +365,11 @@
       }
     ],
     "rank": "E"
+  },
+  "ai": {
+    "password": "123",
+    "exp": 11210,
+    "workouts": [],
+    "rank": "E"
   }
 }
