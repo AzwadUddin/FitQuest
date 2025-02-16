@@ -58,42 +58,48 @@ app.post('/login', (req, res) => {
     res.json({ message: "Login successful", exp: users[username].exp, rank: getRank(users[username].exp) });
   });
 
-// ✅ Login an existing user
+  const challenges = {
+    'D': { task: "Do 30 pushups", reward: 100 },
+    'C': { task: "Run 1 mile", reward: 250 },
+    'B': { task: "Do 50 sit-ups", reward: 500 },
+    'A': { task: "Complete 3 different exercises", reward: 1000 }
+};
+
 app.post('/workout', (req, res) => {
-  const { username, workoutType, amount } = req.body;
+    const { username, workoutType, amount } = req.body;
 
-  console.log(`Workout request received from ${username}: ${workoutType} - ${amount} reps`);
+    if (!users[username]) {
+        return res.status(400).json({ error: "User not found!" });
+    }
 
-  if (!users[username]) {
-    console.log("Error: User not found in database.");
-    return res.status(400).json({ error: "User not logged in!" });
-  }
+    const previousRank = users[username].rank;
+    users[username].exp += amount;
+    users[username].rank = getRank(users[username].exp);
 
-  // Ensure the user has a workouts log
-  if (!users[username].workouts) {
-    users[username].workouts = [];
-  }
+    // ✅ Assign challenge only if the user is reaching the rank for the first time
+    if (users[username].rank !== previousRank && challenges[users[username].rank]) {
+        if (!users[username].completedChallenges) {
+            users[username].completedChallenges = [];
+        }
 
-  // Store the workout in the user’s data
-  users[username].workouts.push({ type: workoutType, amount });
+        // ✅ Only assign challenge if it's the user's first time reaching this rank
+        if (!users[username].completedChallenges.includes(users[username].rank)) {
+            users[username].activeChallenge = challenges[users[username].rank];
+            users[username].completedChallenges.push(users[username].rank);
+        }
+    }
 
-  // Update EXP & Rank
-  users[username].exp += amount;  // Increase EXP
-  users[username].rank = getRank(users[username].exp); // Calculate Rank based on EXP
+    saveUsers(users);
 
-  // ✅ **FIX: Save the updated user data to users.json**
-  saveUsers(users);
-
-  console.log(`Updated ${username}: EXP = ${users[username].exp}, Rank = ${users[username].rank}`);
-  console.log(`Workouts logged:`, users[username].workouts);
-
-  // Return updated user data, including the new EXP, Rank, and Workouts
-  res.json({ 
-    totalExp: users[username].exp,
-    rank: users[username].rank,
-    workouts: users[username].workouts
-  });
+    res.json({ 
+        totalExp: users[username].exp,
+        rank: users[username].rank,
+        workouts: users[username].workouts,
+        challenge: users[username].activeChallenge || null // ✅ Ensure challenge is returned
+    });
 });
+
+
 
 
   
@@ -112,5 +118,28 @@ app.get('/leaderboard', (req, res) => {
 });
 
 
+
+// ✅ Complete a challenge and add EXP
+app.post('/complete-challenge', (req, res) => {
+  const { username, reward } = req.body;
+
+  if (!users[username]) {
+      return res.status(400).json({ error: "User not found!" });
+  }
+
+  users[username].exp += reward; // ✅ Add challenge XP
+  users[username].rank = getRank(users[username].exp); // ✅ Update rank
+
+  // ✅ Remove the active challenge
+  delete users[username].activeChallenge;
+
+  saveUsers(users);
+
+  res.json({ 
+      totalExp: users[username].exp, 
+      rank: users[username].rank 
+  });
+});
 const PORT = 3000;
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

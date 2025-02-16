@@ -95,60 +95,55 @@ async function loginUser(username, password) {
 
 /// Log workout (only works when logged in)
 document.getElementById("workout-form").addEventListener("submit", async (e) => {
-    e.preventDefault(); // Stops page from refreshing
+  e.preventDefault();
 
-    if (!currentUser) {
-        console.error("User not logged in!");
-        return;
-    }
+  if (!currentUser) {
+      console.error("User not logged in!");
+      return;
+  }
 
-    const type = document.getElementById('workout-type').value;
-    const amount = parseInt(document.getElementById('workout-amount').value);
+  const type = document.getElementById('workout-type').value;
+  const amount = parseInt(document.getElementById('workout-amount').value);
 
-    console.log(`Submitting workout: ${type} - ${amount} reps for ${currentUser}`);
+  console.log(`Submitting workout: ${type} - ${amount} reps for ${currentUser}`);
 
-    try {
-        const res = await fetch('http://localhost:3000/workout', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: currentUser, workoutType: type, amount })
-        });
+  try {
+      const res = await fetch("http://localhost:3000/workout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: currentUser, workoutType: type, amount })
+      });
 
-        const data = await res.json();
-        console.log("Workout response:", data);
+      const data = await res.json();
+      console.log("Workout response:", data);
 
-        if (data.error) {
-            document.getElementById('workout-message').innerText = data.error;
-            return;
-        }
+      if (data.error) {
+          document.getElementById('workout-message').innerText = data.error;
+          return;
+      }
 
-        // ✅ Update EXP & Rank on the page immediately
-        document.getElementById('exp-display').innerText = `EXP: ${data.totalExp}`;
-        document.getElementById('rank-display').innerText = `Rank: ${data.rank}`;
+      // ✅ Update EXP & Rank Immediately
+      document.getElementById('exp-display').innerText = `EXP: ${data.totalExp}`;
+      document.getElementById('rank-display').innerText = `Rank: ${data.rank}`;
 
-        // ✅ Update Workout History
-        const workoutList = document.getElementById('workout-history');
-        workoutList.innerHTML = ''; // Clear previous entries
+      // ✅ Refresh Leaderboard
+      updateLeaderboard();
 
-        data.workouts.forEach(workout => {
-            const li = document.createElement('li');
-            li.innerText = `${workout.type}: ${workout.amount} reps`;
-            workoutList.appendChild(li);
-        });
+      // ✅ Check for Rank-Up Challenge Immediately
+      if (data.challenge) {
+          showNotification(data.challenge);
+      }
 
-        // ✅ Refresh Leaderboard immediately after logging workout
-        updateLeaderboard();
+      // ✅ Success Message
+      document.getElementById('workout-message').innerText = "Workout logged successfully!";
+      document.getElementById('workout-amount').value = ""; // Clear input field
 
-        // ✅ Success message
-        document.getElementById('workout-message').innerText = "Workout logged successfully!";
-        document.getElementById('workout-amount').value = ""; // Clear input field
+  } catch (error) {
+      console.error("Error logging workout:", error);
+      document.getElementById('workout-message').innerText = "Failed to log workout.";
+  }
+});
 
-    } catch (error) {
-        console.error("Error logging workout:", error);
-        document.getElementById('workout-message').innerText = "Failed to log workout.";
-    }
-
-  });
 
 
 
@@ -207,3 +202,93 @@ function updateLeaderboard() {
 
 // ✅ Load leaderboard when page loads
 document.addEventListener("DOMContentLoaded", updateLeaderboard);
+
+// ✅ Fetch and show the challenge
+// ✅ Fetch and show the challenge when a user ranks up
+function checkForChallenge(username) {
+  fetch(`http://localhost:3000/challenge/${username}`)
+      .then(response => response.json())
+      .then(data => {
+          if (data.challenge) {
+              showNotification(data.challenge);
+          }
+      })
+      .catch(error => console.error("Error fetching challenge:", error));
+}
+
+// ✅ Show Challenge Notification with Progress Bar
+function showNotification(challenge) {
+  const notification = document.createElement("div");
+  notification.classList.add("notification");
+  notification.innerHTML = `
+      <p><strong>New Challenge Unlocked!</strong></p>
+      <p>${challenge.task}</p>
+      <div class="progress-bar">
+          <div class="progress"></div>
+      </div>
+      <button onclick="completeChallenge(${challenge.reward})">Complete Challenge</button>
+  `;
+
+  document.body.appendChild(notification);
+
+  // ✅ Animate progress bar over 10 seconds
+  let progressBar = notification.querySelector(".progress");
+  let duration = 10000; // 10 seconds
+  progressBar.style.transition = `width ${duration / 1000}s linear`;
+  setTimeout(() => {
+      progressBar.style.width = "100%";
+  }, 100);
+
+  // ✅ Auto-remove notification after 10 seconds
+  setTimeout(() => {
+      notification.remove();
+  }, duration);
+}
+
+// ✅ Complete Challenge and Claim XP
+// ✅ Complete Challenge and Claim XP
+function completeChallenge(reward) {
+  fetch("http://localhost:3000/complete-challenge", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: currentUser, reward })
+  })
+  .then(response => response.json())
+  .then(data => {
+      // ✅ Update EXP and Rank in UI
+      document.getElementById('exp-display').innerText = `EXP: ${data.totalExp}`;
+      document.getElementById('rank-display').innerText = `Rank: ${data.rank}`;
+
+      // ✅ Refresh Leaderboard
+      updateLeaderboard();
+
+      // ✅ Remove Challenge Notification
+      document.querySelector(".notification").remove();
+
+      alert(`Challenge completed! You earned ${reward} XP.`);
+  })
+  .catch(error => console.error("Error completing challenge:", error));
+}
+
+
+
+
+// ✅ Call challenge check after logging a workout
+document.getElementById("workout-form").addEventListener("submit", function(event) {
+  event.preventDefault();
+  const username = document.getElementById("username").value;
+  const workoutType = document.getElementById("workoutType").value;
+  const amount = parseInt(document.getElementById("amount").value);
+
+  fetch("http://localhost:3000/workout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, workoutType, amount })
+  })
+  .then(response => response.json())
+  .then(data => {
+      updateLeaderboard();
+      checkForChallenge(username); // ✅ Fetch challenge when workout is logged
+  })
+  .catch(error => console.error("Error logging workout:", error));
+});

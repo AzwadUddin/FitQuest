@@ -37,12 +37,20 @@
   },
   "amar": {
     "password": "123",
-    "exp": 0,
-    "workouts": []
+    "exp": 16620,
+    "workouts": [],
+    "rank": "C",
+    "completedChallenges": [
+      "C"
+    ],
+    "activeChallenge": {
+      "task": "Run 1 mile",
+      "reward": 250
+    }
   },
   "ammar": {
     "password": "123",
-    "exp": 60,
+    "exp": 5000126169,
     "workouts": [
       {
         "type": "push ups",
@@ -55,9 +63,297 @@
       {
         "type": "pushups",
         "amount": 20
+      },
+      {
+        "type": "pushups",
+        "amount": 20
+      },
+      {
+        "type": "pushups",
+        "amount": 100
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 500
+      },
+      {
+        "type": "pushups",
+        "amount": 123
+      },
+      {
+        "type": "pushups",
+        "amount": 123
+      },
+      {
+        "type": "pushups",
+        "amount": 123
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000
+      },
+      {
+        "type": "pushups",
+        "amount": 5000000000
       }
     ],
-    "rank": "E"
+    "rank": "A",
+    "activeChallenge": {
+      "task": "Run 1 mile",
+      "reward": 250
+    }
   },
   "raheem": {
     "password": "123",
