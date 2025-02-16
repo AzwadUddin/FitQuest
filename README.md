@@ -13,7 +13,8 @@ Are you ready to grind, level up, and become the ultimate version of yourself? �
 ✅ Workout Tracking – Log different workouts and repetitions
 ✅ EXP & Rank System – Earn EXP and level up dynamically
 ✅ Leaderboard – Compete with other users
-✅ Futuristic UI – Smooth page transitions & sleek modern design
+✅ EXP Bar - Shows how much exp is needed to reach the next rank
+✅ Quest - Quest every rank up( Incomplete)
 ✅ Session Persistence – Stay logged in after refreshing
 
 📂 Project Structure
