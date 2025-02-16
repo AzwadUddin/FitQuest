@@ -50,7 +50,7 @@
   },
   "ammar": {
     "password": "123",
-    "exp": 5000126169,
+    "exp": 5001136169,
     "workouts": [
       {
         "type": "push ups",
@@ -368,8 +368,14 @@
   },
   "ai": {
     "password": "123",
-    "exp": 11210,
+    "exp": 69676538,
     "workouts": [],
-    "rank": "E"
+    "rank": "A"
+  },
+  "ai2": {
+    "password": "123",
+    "exp": 2000000,
+    "workouts": [],
+    "rank": "B"
   }
 }

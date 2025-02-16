@@ -314,3 +314,68 @@ function updateXPProgress(exp, nextRankExp) {
   progressLabel.innerText = `Next Rank: ${exp}/${nextRankExp} XP`;
 }
 
+// Function to update the avatar based on rank
+function updateAvatar(rank) {
+  const avatarElement = document.getElementById("rank-avatar");
+  const avatarImages = {
+      'E': "Rank E.png",
+      'D': "Rank D.png",
+      'C': "Rank C.png",
+      'B': "Rank B.png",
+      'A': "Rank A.png"
+  };
+
+  avatarElement.src = avatarImages[rank];
+}
+
+// Update avatar when logging in
+function showWorkoutSection(username, exp, rank, nextRankExp) {
+  currentUser = username;
+  document.getElementById('user-display').innerText = username;
+  document.getElementById('exp-display').innerText = `EXP: ${exp}`;
+  document.getElementById('rank-display').innerText = `Rank: ${rank}`;
+
+  updateXPProgress(exp, nextRankExp);
+  updateAvatar(rank); // ✅ Update avatar when user logs in
+
+  document.getElementById('auth-section').style.display = 'none';
+  document.getElementById('workout-section').style.display = 'block';
+}
+
+// Update avatar when logging a workout
+document.getElementById("workout-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  if (!currentUser) {
+      console.error("User not logged in!");
+      return;
+  }
+
+  const type = document.getElementById('workout-type').value;
+  const amount = parseInt(document.getElementById('workout-amount').value);
+
+  try {
+      const res = await fetch("http://localhost:3000/workout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: currentUser, workoutType: type, amount })
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+          document.getElementById('workout-message').innerText = data.error;
+          return;
+      }
+
+      document.getElementById('exp-display').innerText = `EXP: ${data.totalExp}`;
+      document.getElementById('rank-display').innerText = `Rank: ${data.rank}`;
+      updateXPProgress(data.totalExp, data.nextRankExp);
+      updateAvatar(data.rank); // ✅ Update avatar when ranking up
+
+      updateLeaderboard();
+  } catch (error) {
+      console.error("Error logging workout:", error);
+      document.getElementById('workout-message').innerText = "Failed to log workout.";
+  }
+});

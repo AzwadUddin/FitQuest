@@ -116,33 +116,65 @@ button:active {
   color: #ff3131;
 }
 
-/* ✅ XP Progress Bar */
+
+/* ✅ XP Progress Bar - Adjusted for Better Visibility */
 #xp-progress-container {
   width: 100%;
   background: #222;
-  border-radius: 5px;
+  border-radius: 8px;
   margin-top: 10px;
   position: relative;
-  height: 20px;
+  height: 30px; /* ⬆ Increased height for better visibility */
   overflow: hidden;
   box-shadow: 0 0 8px rgba(255, 49, 49, 0.4);
+  padding: 5px; /* ⬆ Adds spacing to prevent text cutoff */
+  display: flex;
+  align-items: center;
 }
 
+/* ✅ XP Progress Bar Gradient */
 #xp-progress-bar {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #ff3131, #ff6f6f); /* 🔥 Neon red gradient */
+  background: linear-gradient(90deg, #ff3131, #ff6f6f);
   transition: width 0.5s ease-in-out;
   box-shadow: 0 0 15px rgba(255, 49, 49, 0.8);
+  border-radius: 8px;
 }
 
+/* ✅ XP Progress Label - Fully Visible */
 #xp-progress-label {
   position: absolute;
   width: 100%;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px; /* ⬆ Increased font size for clarity */
+  font-weight: bold;
+  color: white;
+  z-index: 2;
   top: 50%;
   transform: translateY(-50%);
-  color: #fff;
-  font-weight: bold;
+  background: rgba(0, 0, 0, 0.5); /* ⬆ Adds contrast behind text */
+  padding: 2px 8px; /* ⬆ Padding ensures text isn't clipped */
+  border-radius: 5px;
+}
+
+
+/* ✅ Avatar Styling */
+#avatar-container {
+  width: 200px;
+  height: 200px;
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #191919;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(255, 49, 49, 0.4); /* 🔥 Red glow effect */
+  padding: 10px;
+}
+
+#rank-avatar {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
